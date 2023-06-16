@@ -20,26 +20,24 @@ export const App = () => {
 
   useEffect(() => {
     
-  query &&
-  getImages(query, page)
-      .then(images => {
-        console.log(images.hits)
-          if(images.hits.length <= 0) {
-            Notiflix.Notify.failure('Nothing was found :(')
-            setisHiden(true)
-          } else if(images.hits.length < 12 ) {
-            console.log(images.hits.length)
-            setisHiden(true)
-          }
-          setimages((prevState) => ([...prevState, ...images.hits]))
-          setisHiden(false)
+  if(!query)return;  
+   setvisible(true)
+    getImages(query, page)
+        .then(images => {
+            if(images.hits.length <= 0) {
+              Notiflix.Notify.failure('Nothing was found :(')
+              return
+            } 
+            setimages((prevState) => ([...prevState, ...images.hits]))
+            setisHiden(page > Math.ceil(images.totalHits / 12) || images.hits.length < 12)
+            // setisHiden(images.hits.length < 12)
+            })
+          .finally(() => {
+            setvisible(false)
           })
-        .finally(() => {
-          setvisible(false)
-        })
-
   
-  }, [query, page])
+    
+    }, [query, page])
   
 
   const onSubmit = (query) => {
@@ -84,72 +82,3 @@ export const App = () => {
     );
   }
 
-
-// export class App extends Component {
-//   state = {
-//     isShowModal: false,
-//     query: '',
-//     page: 1,
-//     images: [],
-//     visible: false,
-//     isHiden: true,
-//     selectedImage: null,
-//   };
-
-//   componentDidUpdate(_, prevState) {
-//     if (prevState.query !== this.state.query || prevState.page !== this.state.page) {
-//       this.setState({visible: true, isHiden: false})
-//       getImages(this.state.query, this.state.page) 
-//       .then(images => {
-//           if(images.hits.length <= 0) {
-//             Notiflix.Notify.failure('Nothing was found :(')
-//           }
-//           if(images.hits.length < 12 ) {
-//             this.setState({isHiden: true})
-//           }
-//           this.setState(prevState => ({images: [...prevState.images, ...images.hits]}))})
-//         .finally(() => {
-//           this.setState({visible: false})
-//         })
-//       } 
-//   }
-
-//   onSubmit = (query) => {
-//     this.setState({query: query, page: 1, images: []});
-//   };
-
-//   loadMoreImages = () => {
-//         this.setState(prevState => ({page: prevState.page + 1}))
-//     }
-      
-
-//   openModal = (image) => {
-//     this.setState({ selectedImage: image, isShowModal: true });
-//   };
-
-//   closeModalImage = () => {
-//     this.setState({ selectedImage: null, isShowModal: false });
-//   };
-
-//   render() {
-//     return (
-//       <>
-//         <Searchbar onSubmit={this.onSubmit} />
-//         <ImageGallery images={this.state.images} openModal={this.openModal} />
-//         {this.state.visible &&
-//             <Circles
-//             height="80"
-//             width="80"
-//             color="#3f51b5"
-//             ariaLabel="circles-loading"
-//             wrapperStyle={{}}
-//             wrapperClass={css.wrapper}
-//             visible={this.state.visible}
-//           />}
-//         {this.state.isHiden? '' : <Button loadMoreImages={this.loadMoreImages}/>}
-//         {this.state.isShowModal && (
-//         <Modal image={this.state.selectedImage} closeModalImage={this.closeModalImage}/>)}
-//       </>
-//     );
-//   }
-// }
