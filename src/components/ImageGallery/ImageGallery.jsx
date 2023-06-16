@@ -3,7 +3,6 @@ import css from './ImageGallery.module.css'
 import PropTypes from 'prop-types';
 
 const ImageGallery = ({ images, openModal }) => {
-  console.log(images)
   return <ul className={css.ImageGallery}>
     {images.map(({id, webformatURL, largeImageURL }) => {
       return (
