@@ -19,14 +19,16 @@ export const App = () => {
   const [selectedImage, setselectedImage] = useState(null)
 
   useEffect(() => {
+    
   query &&
   getImages(query, page)
       .then(images => {
         console.log(images.hits)
           if(images.hits.length <= 0) {
             Notiflix.Notify.failure('Nothing was found :(')
-          }
-          if(images.hits.length < 12 ) {
+            setisHiden(true)
+          } else if(images.hits.length < 12 ) {
+            console.log(images.hits.length)
             setisHiden(true)
           }
           setimages((prevState) => ([...prevState, ...images.hits]))
