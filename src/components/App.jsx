@@ -19,7 +19,7 @@ export const App = () => {
   const [selectedImage, setselectedImage] = useState(null)
 
   useEffect(() => {
-    
+  query &&
   getImages(query, page) 
       .then(images => {
           if(images.hits.length <= 0) {
